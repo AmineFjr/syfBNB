@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Ad;
+use App\Entity\Image;
 use App\Form\AnnonceType;
 use App\Repository\AdRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,11 +42,13 @@ class AdController extends AbstractController
 
         $form->handleRequest($request);
 
-
-
         if($form->isSubmitted() && $form->isValid())
         {
-
+            foreach($ad->getImages() as $image)
+            {
+                $image->setAd($ad);
+                $manager->persist($image);
+            }
             $manager->persist($ad);
 
             $manager->flush();
@@ -55,15 +58,60 @@ class AdController extends AbstractController
                 "L'annonce <strong>{$ad->getTitle()}</strong> a bien été enregistrée !"
             );
 
-
             return $this->redirectToRoute('ads_show',[
                'slug' => $ad->getSlug()
             ]);
-
+        }elseif($form->isSubmitted() && !$form->isValid()){
+            $this->addFlash(
+                'danger',
+                "L'annonce <strong>{$ad->getTitle()}</strong> n'a pas été enregistrée !"
+            );
         }
 
         return $this->render('ad/new.html.twig',[
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     *Permet d'afficher le formulaire d'édition
+     *
+     * @Route("ads/{slug}/edit",name = "ads_edit")
+     *
+     * @return Response
+     */
+    public function edit(Ad $ad,Request $request,EntityManagerInterface $manager)
+    {
+
+        $form = $this->createForm(AnnonceType::class,$ad);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+
+            foreach($ad->getImages() as $image)
+            {
+                $image->setAd($ad);
+                $manager->persist($image);
+            }
+            $manager->persist($ad);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                "Les modifications de l'annonce <strong>{$ad->getTitle()}</strong> ont bien été enregistrée !"
+            );
+
+
+            return $this->redirectToRoute('ads_show',[
+                'slug' => $ad->getSlug()
+            ]);
+
+        }
+
+        return $this->render('ad/edit.html.twig',[
+            'form' => $form->createView(),
+            'ad' => $ad
         ]);
     }
 
