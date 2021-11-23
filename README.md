@@ -23,3 +23,10 @@ composer require cocur/slugify
 Controller: Création d'un Controller 
 
 php bin/console make:controller AdController
+
+
+-------------------------------------------------
+
+Form: Créer une classe contenant la création du formulaire
+
+php bin/console make:form AnnonceType
