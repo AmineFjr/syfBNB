@@ -49,8 +49,10 @@ class AdController extends AbstractController
                 $image->setAd($ad);
                 $manager->persist($image);
             }
-            $manager->persist($ad);
 
+            $ad->setAuthor($this->getUser());
+
+            $manager->persist($ad);
             $manager->flush();
 
             $this->addFlash(
@@ -120,7 +122,6 @@ class AdController extends AbstractController
      *
      * Je récupère l'annonce qui correspond au slug !
      * @Route("/ads/{slug}", name="ads_show")
-     *
      * @return Response
      *
      */

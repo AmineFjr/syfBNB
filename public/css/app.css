@@ -19,3 +19,20 @@ a {
     text-decoration: none;
     color : black
 }
+
+.avatar {
+    max-width : 128px;
+    max-height: 128px;
+    border-radius : 50%;
+}
+
+.avatar-medium{
+    max-height: 64px;
+    max-width : 64px;
+}
+
+.avatar-mini{
+    max-width : 24px;
+    max-height:24px;
+
+}
