@@ -15,6 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class AccountController extends AbstractController
 {
@@ -75,6 +76,7 @@ class AccountController extends AbstractController
     /**
      *Permet d'afficher et de traiter le formulaire de modification de profil
      * @Route("/account/profile",name="account_profile")
+     * @IsGranted("ROLE_USER")
      * @return Response
      */
     public function profile(Request $request,EntityManagerInterface $manager)
@@ -100,6 +102,7 @@ class AccountController extends AbstractController
     /**
      *Permet de modifier le mot de passe
      * @Route("/account/password-update",name="account_password")
+     * @IsGranted("ROLE_USER")
      * @return Response
      */
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder, EntityManagerInterface $manager)
@@ -111,31 +114,29 @@ class AccountController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($user) {
-            if ($form->isSubmitted() && $form->isValid()) {
-                if (!password_verify($passwordUpdate->getOldPassword(), $user->getHash())) {
-                    //Gestion des erreurs
-                    $form->get('oldPassword')->addError(new FormError("Le mot de passe que vous avez tapé n'est pas votre mot de passe actuel !"));
 
-                } else {
-                    $newPassword = $passwordUpdate->getNewPassword();
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!password_verify($passwordUpdate->getOldPassword(), $user->getHash())) {
+                //Gestion des erreurs
+                $form->get('oldPassword')->addError(new FormError("Le mot de passe que vous avez tapé n'est pas votre mot de passe actuel !"));
 
-                    $hash = $encoder->encodePassword($user, $newPassword);
+            } else {
+                $newPassword = $passwordUpdate->getNewPassword();
 
-                    $user->setHash($hash);
+                $hash = $encoder->encodePassword($user, $newPassword);
 
-                    $manager->persist($user);
-                    $manager->flush();
-                    $this->addFlash(
-                        'success',
-                        "Votre mot de passe a bien été modifié !"
-                    );
-                    return $this->redirectToRoute('homepage');
-                }
+                $user->setHash($hash);
+
+                $manager->persist($user);
+                $manager->flush();
+                $this->addFlash(
+                    'success',
+                    "Votre mot de passe a bien été modifié !"
+                );
+                return $this->redirectToRoute('homepage');
             }
-        }else{
-            return $this->redirectToRoute('account_login');
         }
+
 
         return $this->render('account/password.html.twig', [
             'form' => $form->createView()
@@ -146,7 +147,7 @@ class AccountController extends AbstractController
     /**
      * Permet d'afficher le profil de l'utilisateur connecté
      * @Route("/account",name="account_index")
-     *
+     * @IsGranted("ROLE_USER")
      * @return Response
      */
     public function myAccount()
