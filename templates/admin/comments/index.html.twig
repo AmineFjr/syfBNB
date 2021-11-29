@@ -5,42 +5,45 @@
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="my-5">Gestion des Annonces</h1>
+        <h1 class="my-5">Gestion des Commentaires</h1>
         <table class="table table-hover">
             <thead>
             <tr>
                 <th>ID</th>
-                <th>TITRE</th>
+                <th>DATE</th>
                 <th>AUTEUR</th>
-                <th class="text-center">RESERVATIONS</th>
+                <th>Commentaire</th>
                 <th class="text-center">NOTE</th>
+                <th>Annonce</th>
                 <th>ACTIONS</th>
             </tr>
             </thead>
             <tbody>
-            {% for ad in ads %}
+            {% for comment in comments %}
                 <tr>
-                    <td>{{ad.id}}
-                    </td>
-                    <td>{{ad.title}}
+                    <td>{{comment.id}}
                     </td>
                     <td>
-                        <img src="{{ad.author.picture}}" alt="Avatar de {{ad.author.fullname}}" class="avatar avatar-micro mr-2">
-                        {{ad.author.fullName}}
-                    </td>
-                    <td class="text-center">
-							<span class="badge bg-primary rounded-pill">{{ad.bookings | length}}
-							</span>
-                    </td>
-                    <td class="text-center">
-							<span class="badge bg-primary rounded-pill">{{ad.avgRatings | number_format(1, ',', ' ')}}
-							</span>
+                        {{comment.createdAt|date('d/m/Y H:i')}}
                     </td>
                     <td>
-                        <a href="{{ path('admin_ads_edit',{'id':ad.id}) }}" class="btn btn-primary">
+                        <img src="{{comment.ad.author.picture}}" alt="Avatar de {{comment.ad.author.fullname}}" class="avatar avatar-micro mr-2">
+                        {{comment.ad.author.fullName}}
+                    </td>
+                    <td>
+							{{comment.content}}
+                    </td>
+                    <td class="text-center">
+							<span class="badge bg-dark rounded-pill">{{comment.rating | number_format(1, ',', ' ')}}
+							</span>
+                    </td>
+                    <td>{{comment.ad.title}}
+                    </td>
+                    <td>
+                        <a href="{{ path('admin_comments_edit',{'id':comment.id}) }}" class="btn btn-primary">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a href="{{ path('admin_ads_delete',{'id':ad.id}) }}" class="btn btn-danger">
+                        <a href="{{ path('admin_comments_delete',{'id':comment.id}) }}" class="btn btn-danger">
                             <i class="fas fa-trash"></i>
                         </a>
                     </td>
