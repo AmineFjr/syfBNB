@@ -6,6 +6,7 @@ use App\Entity\Comment;
 use App\Form\AdminCommentType;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
+use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,14 +19,17 @@ class AdminCommentController extends AbstractController
     /**
      * Permet d'afficher les conmmentaires
      *
-     * @Route("/admin/comments",name = "admin_comments_index")
+     * @Route("/admin/comments/{page<\d+>?1}",name = "admin_comments_index")
      * @return Response
      */
-    public function index(CommentRepository $comment): Response
+    public function index(CommentRepository $comment,$page,PaginationService $pagination): Response
     {
+        $pagination->setEntityClass(Comment::class)
+            ->setLimit(5)
+            ->setPage($page);
+
         return $this->render('admin/comments/index.html.twig', [
-            'controller_name' => 'AdminCommentController',
-            'comments' => $comment->findAll()
+            'pagination' => $pagination
         ]);
     }
 

@@ -7,6 +7,7 @@ use App\Entity\Comment;
 use App\Form\AdminBookingType;
 use App\Form\AdminCommentType;
 use App\Repository\BookingRepository;
+use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,15 +18,16 @@ class AdminBookingController extends AbstractController
 {
 
     /**
-     * @Route("/admin/booking",name = "admin_booking_index")
+     * @Route("/admin/booking/{page<\d+>?1}",name = "admin_booking_index")
      * @return Response
      */
-    public function index(BookingRepository $booking): Response
+    public function index(BookingRepository $booking,$page,PaginationService $pagination): Response
     {
+        $pagination->setEntityClass(Booking::class)
+                    ->setPage($page);
 
         return $this->render('admin/booking/index.html.twig', [
-            'controller_name' => 'AdminBookingController',
-            'bookings' => $booking->findAll()
+            'pagination' => $pagination
         ]);
     }
 
