@@ -30,3 +30,9 @@ php bin/console make:controller AdController
 Form: Créer une classe contenant la création du formulaire
 
 php bin/console make:form AnnonceType
+
+-------------------------------------------------
+
+Pour enlever le .env :
+
+git rm --cached .env
