@@ -5,10 +5,8 @@
         <title>SymBNB - {% block title %}Welcome!{% endblock %}</title>
         <meta name="viewport" content="width=device-width, user-scalable=no">
 
-        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset('build/css/app.css') }}">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
-        <link rel="stylesheet" href="/css/app.css">
-
 
         {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
@@ -16,11 +14,7 @@
             {#{{ encore_entry_link_tags('app') }}#}
         {% endblock %}
 
-        {% block javascripts %}
-            <script src="/js/jquery.min.js"></script>
-            <script src="/js/popper.min.js"></script>
-            <script src="/js/bootstrap.min.js"></script>
-        {% endblock %}
+
 
     </head>
     <body>
@@ -30,8 +24,11 @@
         {% block body %}{% endblock %}
 
 
-
         {% include 'partials/footer.html.twig' %}
+
+
+        {{ encore_entry_script_tags('js/app') }}
+
 
     </body>
 </html>
